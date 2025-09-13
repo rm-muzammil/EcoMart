@@ -6,6 +6,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import cors from "cors";
 import connectToDB from "./config/connectToDB.js";
+import userRouter from "./route/user.route.js";
 
 const app = express();
 
@@ -31,6 +32,8 @@ app.get("/", (req, res) => {
     message: "Server is running",
   });
 });
+
+app.use("/api/user", userRouter);
 
 connectToDB().then(() => {
   app.listen(PORT, () => {
