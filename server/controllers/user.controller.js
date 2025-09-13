@@ -5,6 +5,9 @@ import bcryptjs from "bcryptjs";
 import generatedRefreshToken from "../utils/generatedRefreshToken.js";
 import generatedAccessToken from "../utils/generatedAccessToken.js";
 import uploadImageCloudinary from "../utils/uploadImageCloudinary.js";
+import generatedOtp from "../utils/generatedOtp.js";
+import forgotPasswordTemplate from "../utils/forgotPasswordTemplate.js";
+import jwt from "jsonwebtoken";
 export async function registerUserController(req, res) {
   try {
     const { name, email, password } = req.body;
@@ -57,7 +60,6 @@ export async function registerUserController(req, res) {
       .json({ message: error.message || error, error: true, success: false });
   }
 }
-
 export async function verifyEmailController(req, res) {
   try {
     const { code } = req.body;
@@ -88,7 +90,6 @@ export async function verifyEmailController(req, res) {
     });
   }
 }
-
 export async function loginUserController(req, res) {
   try {
     const { email, password } = req.body;
@@ -150,7 +151,6 @@ export async function loginUserController(req, res) {
       .json({ message: error.message || error, error: true, success: false });
   }
 }
-
 export async function logoutUserController(req, res) {
   try {
     const userId = req.userId;
@@ -229,6 +229,186 @@ export async function updateUserDetails(req, res) {
       message: error.message || error,
       error: true,
       success: false,
+    });
+  }
+}
+
+export async function forgotPasswordController(req, res) {
+  try {
+    const { email } = req.body;
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(400).json({
+        message: "User fon found",
+        success: false,
+        error: true,
+      });
+    }
+    const otp = generatedOtp();
+    const expireTime = new Date() + 1000 * 60 * 10;
+
+    const update = await UserModel.findByIdAndUpdate(user._id, {
+      forgot_password_otp: otp,
+      forgot_password_expiry: new Date(expireTime).toISOString(),
+    });
+    await sendEmail({
+      sendTO: email,
+      subject: "Forgot Password",
+      html: forgotPasswordTemplate({
+        name: user.name,
+        otp: otp,
+      }),
+    });
+    return res.json({
+      message: "check your email",
+      success: true,
+      error: false,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      success: false,
+      error: true,
+    });
+  }
+}
+export async function verifyForgotPasswordOtpController(req, res) {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+      return res.status(400).json({
+        message: "Email and OTP are Required",
+        error: true,
+        success: false,
+      });
+    }
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(400).json({
+        message: "User not found",
+        success: false,
+        error: true,
+      });
+    }
+    const currentTime = new Date().toISOString();
+    if (user.forgot_password_expiry < currentTime) {
+      return res.status(400).json({
+        message: "OTP Experied",
+        success: false,
+        error: true,
+      });
+    }
+    if (user.forgot_password_otp !== otp) {
+      return res.status(400).json({
+        message: "Invalid OTP!",
+        success: false,
+        error: true,
+      });
+    }
+
+    return res.json({
+      message: "Verify OTP",
+      success: true,
+      error: false,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      success: false,
+      error: true,
+    });
+  }
+}
+export async function resetPasswordController(req, res) {
+  try {
+    const { email, newPassword, confirmPassword } = req.body;
+    if (!email || !newPassword || !confirmPassword) {
+      return res.status(400).json({
+        message: "All fields are Required",
+        success: false,
+        error: true,
+      });
+    }
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(400).json({
+        message: "Email is Invalid",
+        success: false,
+        error: true,
+      });
+    }
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({
+        message: "Password and Confirm Password must be same",
+        success: false,
+        error: true,
+      });
+    }
+    const salt = await bcryptjs.genSalt(10);
+    const hashPassword = await bcryptjs.hash(newPassword, salt);
+
+    const update = await UserModel.findOneAndUpdate(user._id, {
+      password: hashPassword,
+    });
+
+    return res.json({
+      message: "Password Updated Successfully",
+      error: false,
+      success: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      success: false,
+      error: true,
+    });
+  }
+}
+
+export async function refreshTokenController(req, res) {
+  try {
+    const refreshToken =
+      req.cookies.refreshToken || req?.header?.authorization.split(" ")[1];
+
+    if (!refreshToken) {
+      return res.status(400).json({
+        message: "Unautorized access",
+        error: true,
+        success: false,
+      });
+    }
+    const verifyToken = await jwt.verify(
+      refreshToken,
+      process.env.SECRET_KEY_REFRESH_TOKEN
+    );
+    if (!verifyToken) {
+      return res.status(401).json({
+        message: "Token Experied",
+        error: true,
+        success: false,
+      });
+    }
+    const userId = verifyToken?._id;
+    const newAccessToken = await generatedAccessToken(userId);
+    const cookiesOption = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+    };
+    res.cookie("accessToken", newAccessToken, cookiesOption);
+    return res.json({
+      message: "New Access Token generated",
+      error: false,
+      success: true,
+      data: {
+        accessToken: newAccessToken,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      success: false,
+      error: true,
     });
   }
 }
