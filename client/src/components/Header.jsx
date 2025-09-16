@@ -20,9 +20,6 @@ export default function Header() {
           {/* Right Side: Cart + Auth */}
           <div className="flex items-center space-x-4">
             {/* Search Icon (Mobile Only) */}
-            <button className="md:hidden p-2">
-              <Search className="w-6 h-6 text-gray-600" />
-            </button>
 
             {/* Cart */}
             <button className="relative p-2">
