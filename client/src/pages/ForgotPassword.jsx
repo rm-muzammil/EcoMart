@@ -3,10 +3,10 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 
-function Login() {
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [loading, setLoading] = useState(false);
+function ForgotPassword() {
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({ email: "" });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,8 +18,8 @@ function Login() {
     try {
       setLoading(true);
 
-      const res = await axios.post(
-        "http://localhost:8080/api/user/login",
+      const res = await axios.put(
+        "http://localhost:8080/api/user/forgot-password",
         formData,
         {
           headers: { "Content-Type": "application/json" },
@@ -27,11 +27,12 @@ function Login() {
       );
 
       toast.success(res.data.message || "Login successful!");
-      localStorage.setItem("accessToken", res.data.data.accessToken);
-      localStorage.setItem("refreshToken", res.data.data.refreshToken);
-      navigate("/");
+      localStorage.setItem("token", res.data.token);
 
-      setFormData({ email: "", password: "" });
+      navigate("/otp-verification", {
+        state: formData,
+      });
+      setFormData({ email: "" });
     } catch (error) {
       if (error.response) {
         toast.error(error.response.data.message || "Login failed");
@@ -49,7 +50,7 @@ function Login() {
         onSubmit={handleSubmit}
         className="bg-white p-6 shadow-md rounded-xl w-full max-w-md"
       >
-        <h2 className="text-2xl font-bold text-center mb-4">Login</h2>
+        <h2 className="text-2xl font-bold text-center mb-4">Forgot Password</h2>
 
         <input
           type="email"
@@ -61,24 +62,6 @@ function Login() {
           required
         />
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          className="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
-          required
-        />
-        <p className=" text-right text-sm text-gray-600">
-          <Link
-            to={"/forgot-password"}
-            className="text-green-600 hover:underline"
-          >
-            Forgot Password
-          </Link>
-        </p>
-
         <button
           type="submit"
           disabled={loading}
@@ -88,7 +71,7 @@ function Login() {
               : "bg-green-600 hover:bg-green-700"
           }`}
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Logging in..." : "Send OTP"}
         </button>
 
         {/* Switch to Register */}
@@ -103,4 +86,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default ForgotPassword;

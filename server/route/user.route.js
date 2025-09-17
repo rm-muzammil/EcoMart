@@ -20,7 +20,7 @@ userRouter.post("/login", loginUserController);
 userRouter.get("/logout", auth, logoutUserController);
 userRouter.put("/upload-avatar", auth, upload.single("avatar"), uploadAvatar);
 userRouter.put("/update-user", auth, updateUserDetails);
-userRouter.put("/forgot-password", auth, forgotPasswordController);
+userRouter.put("/forgot-password", forgotPasswordController);
 userRouter.put(
   "/verify-forgot-password-otp",
   verifyForgotPasswordOtpController

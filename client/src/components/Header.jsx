@@ -30,12 +30,18 @@ export default function Header() {
             </button>
 
             {/* Auth Buttons */}
-            <button className="px-3 py-1 text-gray-700 hover:text-green-600">
+            <Link
+              to={"/login"}
+              className="px-3 py-1 text-gray-700 hover:text-green-600"
+            >
               Login
-            </button>
-            <button className="px-4 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+            </Link>
+            <Link
+              to={"/register"}
+              className="px-4 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+            >
               Sign Up
-            </button>
+            </Link>
           </div>
         </div>
       </div>
