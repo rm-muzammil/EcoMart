@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const Axios = axios.create({
+export const Axios = axios.create({
   baseURL: "http://localhost/5173",
   withCredentials: true,
 });
@@ -54,3 +54,4 @@ const refreshAccessToken = async (refreshToken) => {
     return accessToken;
   } catch (error) {}
 };
+export default Axios;

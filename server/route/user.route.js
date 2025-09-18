@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   forgotPasswordController,
+  getLoginedUserDetailsController,
   loginUserController,
   logoutUserController,
   refreshTokenController,
@@ -18,6 +19,7 @@ userRouter.post("/register", registerUserController);
 userRouter.post("/verify-email", verifyEmailController);
 userRouter.post("/login", loginUserController);
 userRouter.get("/logout", auth, logoutUserController);
+userRouter.get("/get-user-details", auth, getLoginedUserDetailsController);
 userRouter.put("/upload-avatar", auth, upload.single("avatar"), uploadAvatar);
 userRouter.put("/update-user", auth, updateUserDetails);
 userRouter.put("/forgot-password", forgotPasswordController);
