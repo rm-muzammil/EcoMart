@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import fetchUserDetails from "../utils/fetchUserDetail";
+import { useDispatch } from "react-redux";
+import { setUserDetails } from "../store/userSlice";
 
 function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -29,6 +33,10 @@ function Login() {
       toast.success(res.data.message || "Login successful!");
       localStorage.setItem("accessToken", res.data.data.accessToken);
       localStorage.setItem("refreshToken", res.data.data.refreshToken);
+      const userDetails = await fetchUserDetails();
+      console.log(userDetails.data);
+
+      dispatch(setUserDetails(userDetails.data));
       navigate("/");
 
       setFormData({ email: "", password: "" });

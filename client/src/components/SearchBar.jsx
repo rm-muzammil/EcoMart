@@ -13,7 +13,10 @@ function SearchBar() {
 
   return (
     <>
-      <div className="hidden md:flex items-center flex-1 max-w-md mx-6 relative">
+      <div
+        onClick={redirectTOSearchPage}
+        className="hidden md:flex items-center flex-1 max-w-md mx-6 relative"
+      >
         {/* Animated Placeholder */}
         {value === "" && (
           <TypeAnimation
@@ -30,7 +33,6 @@ function SearchBar() {
             wrapper="span"
             speed={50}
             className="absolute left-4 text-gray-400 text-sm pointer-events-none"
-            onClick={redirectTOSearchPage}
             repeat={Infinity}
           />
         )}

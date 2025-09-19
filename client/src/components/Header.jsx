@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ShoppingCart, ChevronDown } from "lucide-react";
 import SearchBar from "./SearchBar";
 import { Link, useNavigate } from "react-router-dom";
@@ -14,6 +14,23 @@ export default function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // const handleDropdownClose = () => {
+  //   dropdownOpen(false);
+  // };
+  useEffect(() => {
+    setDropdownOpen(false);
+  }, [user]);
+
+  // useEffect(() => {
+  //   const handleClickOutside = (e) => {
+  //     if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+  //       setDropdownOpen(false);
+  //     }
+  //   };
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => document.removeEventListener("mousedown", handleClickOutside);
+  // }, []);
 
   const handleLogout = async () => {
     try {
