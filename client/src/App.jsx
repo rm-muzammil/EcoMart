@@ -12,13 +12,18 @@ import { setUserDetails } from "./store/userSlice";
 
 function App() {
   const dispatch = useDispatch();
-  const fetchUser = async () => {
-    const userData = await fetchUserDetails();
-    dispatch(setUserDetails(userData.data));
-  };
+
   useEffect(() => {
+    const fetchUser = async () => {
+      const userData = await fetchUserDetails();
+      console.log(userData.data);
+
+      if (userData?.success) {
+        dispatch(setUserDetails(userData.data));
+      }
+    };
     fetchUser();
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
