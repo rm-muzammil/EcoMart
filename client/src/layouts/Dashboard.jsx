@@ -33,7 +33,7 @@ export default function Dashboard() {
                 Categories
               </NavLink>
               <NavLink
-                to="subcategories"
+                to="sub-categories"
                 className={({ isActive }) =>
                   `px-4 py-2 rounded-lg ${
                     isActive
