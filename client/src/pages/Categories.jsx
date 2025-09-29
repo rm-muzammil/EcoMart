@@ -1,70 +1,147 @@
-// src/pages/admin/Categories.jsx
-import { useState, useEffect } from "react";
-import { Button } from "../components/ui/button";
-import { Card, CardContent } from "../components/ui/card";
-import AddNewCategoryModal from "..//components/admin/AddNewCategoryModal";
+import React, { useEffect, useState } from "react";
+import UploadCategoryModel from "../components/UploadCategoryModel";
+import Loading from "../components/Loading";
+import NoData from "../components/NoData";
+import Axios from "../utils/Axios";
+import SummaryApi from "../common/SummaryApi";
+import EditCategory from "../components/EditCategory";
+import CofirmBox from "../components/CofirmBox";
+import toast from "react-hot-toast";
+import AxiosToastError from "../utils/AxiosToastError";
+import { useSelector } from "react-redux";
 
-export default function Categories() {
-  const [categories, setCategories] = useState([]);
-  const [openModal, setOpenModal] = useState(false);
+const Categories = () => {
+  const [openUploadCategory, setOpenUploadCategory] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [categoryData, setCategoryData] = useState([]);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [editData, setEditData] = useState({
+    name: "",
+    image: "",
+  });
+  const [openConfimBoxDelete, setOpenConfirmBoxDelete] = useState(false);
+  const [deleteCategory, setDeleteCategory] = useState({
+    _id: "",
+  });
+  // const allCategory = useSelector(state => state.product.allCategory)
+
+  // useEffect(()=>{
+  //     setCategoryData(allCategory)
+  // },[allCategory])
+
+  const fetchCategory = async () => {
+    try {
+      setLoading(true);
+      const response = await Axios({
+        ...SummaryApi.getCategory,
+      });
+      const { data: responseData } = response;
+
+      if (responseData.success) {
+        setCategoryData(responseData.data);
+      }
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch("/api/categories");
-        const data = await res.json();
-        setCategories(data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-
-    fetchCategories();
+    fetchCategory();
   }, []);
 
+  const handleDeleteCategory = async () => {
+    try {
+      const response = await Axios({
+        ...SummaryApi.deleteCategory,
+        data: deleteCategory,
+      });
+
+      const { data: responseData } = response;
+
+      if (responseData.success) {
+        toast.success(responseData.message);
+        fetchCategory();
+        setOpenConfirmBoxDelete(false);
+      }
+    } catch (error) {
+      AxiosToastError(error);
+    }
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">Categories</h1>
-        <Button
-          className="bg-green-600 hover:bg-green-700 text-white"
-          onClick={() => setOpenModal(true)}
+    <section className="">
+      <div className="p-2   bg-white shadow-md flex items-center justify-between">
+        <h2 className="font-semibold">Category</h2>
+        <button
+          onClick={() => setOpenUploadCategory(true)}
+          className="text-sm border border-primary-200 hover:bg-primary-200 px-3 py-1 rounded"
         >
-          + Add Category
-        </Button>
+          Add Category
+        </button>
+      </div>
+      {!categoryData[0] && !loading && <NoData />}
+
+      <div className="p-4 grid  grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+        {categoryData.map((category, index) => {
+          return (
+            <div className="w-32 h-56 rounded shadow-md" key={category._id}>
+              <img
+                alt={category.name}
+                src={category.image}
+                className="w-full object-scale-down"
+              />
+              <div className="items-center h-9 flex gap-2">
+                <button
+                  onClick={() => {
+                    setOpenEdit(true);
+                    setEditData(category);
+                  }}
+                  className="flex-1 bg-green-100 hover:bg-green-200 text-green-600 font-medium py-1 rounded"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => {
+                    setOpenConfirmBoxDelete(true);
+                    setDeleteCategory(category);
+                  }}
+                  className="flex-1 bg-red-100 hover:bg-red-200 text-red-600 font-medium py-1 rounded"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Categories Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {categories.length > 0 ? (
-          categories.map((cat) => (
-            <Card key={cat._id} className="shadow-md">
-              <CardContent className="p-4 flex flex-col items-center text-center">
-                <img
-                  src={cat.image}
-                  alt={cat.name}
-                  className="w-24 h-24 object-cover rounded-full border"
-                />
-                <p className="mt-3 font-semibold text-gray-700">{cat.name}</p>
-              </CardContent>
-            </Card>
-          ))
-        ) : (
-          <p className="text-gray-500 col-span-full text-center">
-            No categories found.
-          </p>
-        )}
-      </div>
+      {loading && <Loading />}
 
-      {/* Modal */}
-      <AddNewCategoryModal
-        open={openModal}
-        onClose={() => setOpenModal(false)}
-        onCategoryAdded={(newCategory) =>
-          setCategories((prev) => [...prev, newCategory])
-        }
-      />
-    </div>
+      {openUploadCategory && (
+        <UploadCategoryModel
+          fetchData={fetchCategory}
+          close={() => setOpenUploadCategory(false)}
+        />
+      )}
+
+      {openEdit && (
+        <EditCategory
+          data={editData}
+          close={() => setOpenEdit(false)}
+          fetchData={fetchCategory}
+        />
+      )}
+
+      {openConfimBoxDelete && (
+        <CofirmBox
+          close={() => setOpenConfirmBoxDelete(false)}
+          cancel={() => setOpenConfirmBoxDelete(false)}
+          confirm={handleDeleteCategory}
+        />
+      )}
+    </section>
   );
-}
+};
+
+export default Categories;
