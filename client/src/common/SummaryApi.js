@@ -54,11 +54,11 @@ const SummaryApi = {
     method: "get",
   },
   updateCategory: {
-    url: "/api/category/update",
+    url: "/category/update",
     method: "put",
   },
   deleteCategory: {
-    url: "/api/category/delete",
+    url: "/category/delete",
     method: "delete",
   },
   createSubCategory: {

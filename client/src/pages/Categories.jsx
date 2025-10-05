@@ -82,7 +82,7 @@ const Categories = () => {
       </div>
       {!categoryData[0] && !loading && <NoData />}
 
-      <div className="p-4 grid  grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
+      {/* <div className="p-4 grid  grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
         {categoryData.map((category, index) => {
           return (
             <div className="w-32 h-56 rounded shadow-md" key={category._id}>
@@ -91,6 +91,7 @@ const Categories = () => {
                 src={category.image}
                 className="w-full object-scale-down"
               />
+              <p>{category.name}</p>
               <div className="items-center h-9 flex gap-2">
                 <button
                   onClick={() => {
@@ -107,6 +108,47 @@ const Categories = () => {
                     setDeleteCategory(category);
                   }}
                   className="flex-1 bg-red-100 hover:bg-red-200 text-red-600 font-medium py-1 rounded"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div> */}
+      <div className="p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        {categoryData.map((category) => {
+          return (
+            <div
+              key={category._id}
+              className="bg-white rounded-lg shadow-md flex flex-col items-center p-3 hover:shadow-lg transition"
+            >
+              <div className="w-40 h-30 flex items-center justify-center overflow-hidden">
+                <img
+                  alt={category.name}
+                  src={category.image}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <p className="mt-2 text-center font-medium text-gray-700">
+                {category.name}
+              </p>
+              <div className="flex w-full gap-2 mt-3">
+                <button
+                  onClick={() => {
+                    setOpenEdit(true);
+                    setEditData(category);
+                  }}
+                  className="flex-1 bg-green-100 hover:bg-green-200 text-green-600 text-sm py-1 rounded"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => {
+                    setOpenConfirmBoxDelete(true);
+                    setDeleteCategory(category);
+                  }}
+                  className="flex-1 bg-red-100 hover:bg-red-200 text-red-600 text-sm py-1 rounded"
                 >
                   Delete
                 </button>
