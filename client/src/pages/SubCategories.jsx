@@ -1,91 +1,186 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import UploadSubCategoryModel from "../components/UploadSubCategoryModel";
+import AxiosToastError from "../utils/AxiosToastError";
 import Axios from "../utils/Axios";
+import SummaryApi from "../common/SummaryApi";
+import DisplayTable from "../components/DisplayTable";
+import { createColumnHelper } from "@tanstack/react-table";
+import ViewImage from "../components/ViewImage";
+import { LuPencil } from "react-icons/lu";
+import { MdDelete } from "react-icons/md";
+import { HiPencil } from "react-icons/hi";
+import EditSubCategory from "../components/EditSubCategory";
+import CofirmBox from "../components/CofirmBox";
 import toast from "react-hot-toast";
 
-export default function SubCategories() {
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [subcategories, setSubcategories] = useState([]);
-  const [name, setName] = useState("");
+const SubCategoryPage = () => {
+  const [openAddSubCategory, setOpenAddSubCategory] = useState(false);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const columnHelper = createColumnHelper();
+  const [ImageURL, setImageURL] = useState("");
+  const [openEdit, setOpenEdit] = useState(false);
+  const [editData, setEditData] = useState({
+    _id: "",
+  });
+  const [deleteSubCategory, setDeleteSubCategory] = useState({
+    _id: "",
+  });
+  const [openDeleteConfirmBox, setOpenDeleteConfirmBox] = useState(false);
 
-  const fetchCategories = async () => {
-    const res = await Axios.get("/category");
-    setCategories(res.data.data);
-  };
-
-  const fetchSubcategories = async () => {
-    const res = await Axios.get("/subcategory");
-    setSubcategories(res.data.data);
-  };
-
-  const handleAddSubcategory = async (e) => {
-    e.preventDefault();
-    if (!name.trim() || !selectedCategory)
-      return toast.error("Select category & enter subcategory name");
-
+  const fetchSubCategory = async () => {
     try {
-      const res = await Axios.post("/subcategory", {
-        name,
-        category: selectedCategory,
+      setLoading(true);
+      const response = await Axios({
+        ...SummaryApi.getSubCategory,
       });
-      toast.success(res.data.message || "Subcategory added");
-      setName("");
-      fetchSubcategories();
+      const { data: responseData } = response;
+
+      if (responseData.success) {
+        setData(responseData.data);
+      }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Error adding subcategory");
+      AxiosToastError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCategories();
-    fetchSubcategories();
+    fetchSubCategory();
   }, []);
 
+  const column = [
+    columnHelper.accessor("name", {
+      header: "Name",
+    }),
+    columnHelper.accessor("image", {
+      header: "Image",
+      cell: ({ row }) => {
+        console.log("row");
+        return (
+          <div className="flex justify-center items-center">
+            <img
+              src={row.original.image}
+              alt={row.original.name}
+              className="w-8 h-8 cursor-pointer"
+              onClick={() => {
+                setImageURL(row.original.image);
+              }}
+            />
+          </div>
+        );
+      },
+    }),
+    columnHelper.accessor("category", {
+      header: "Category",
+      cell: ({ row }) => {
+        return (
+          <>
+            {row.original.category.map((c, index) => {
+              return (
+                <p
+                  key={c._id + "table"}
+                  className="shadow-md px-1 inline-block"
+                >
+                  {c.name}
+                </p>
+              );
+            })}
+          </>
+        );
+      },
+    }),
+    columnHelper.accessor("_id", {
+      header: "Action",
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center justify-center gap-3">
+            <button
+              onClick={() => {
+                setOpenEdit(true);
+                setEditData(row.original);
+              }}
+              className="p-2 bg-green-100 rounded-full hover:text-green-600"
+            >
+              <HiPencil size={20} />
+            </button>
+            <button
+              onClick={() => {
+                setOpenDeleteConfirmBox(true);
+                setDeleteSubCategory(row.original);
+              }}
+              className="p-2 bg-red-100 rounded-full text-red-500 hover:text-red-600"
+            >
+              <MdDelete size={20} />
+            </button>
+          </div>
+        );
+      },
+    }),
+  ];
+
+  const handleDeleteSubCategory = async () => {
+    try {
+      const response = await Axios({
+        ...SummaryApi.deleteSubCategory,
+        data: deleteSubCategory,
+      });
+
+      const { data: responseData } = response;
+
+      if (responseData.success) {
+        toast.success(responseData.message);
+        fetchSubCategory();
+        setOpenDeleteConfirmBox(false);
+        setDeleteSubCategory({ _id: "" });
+      }
+    } catch (error) {
+      AxiosToastError(error);
+    }
+  };
   return (
-    <div>
-      <h1 className="text-xl font-bold mb-4">Manage Subcategories</h1>
-
-      <form
-        className="flex flex-col md:flex-row gap-2 mb-6"
-        onSubmit={handleAddSubcategory}
-      >
-        <select
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-          className="border border-gray-300 rounded-lg p-2"
+    <section className="">
+      <div className="p-2   bg-white shadow-md flex items-center justify-between">
+        <h2 className="font-semibold">Sub Category</h2>
+        <button
+          onClick={() => setOpenAddSubCategory(true)}
+          className="text-sm border border-primary-200 hover:bg-primary-200 px-3 py-1 rounded"
         >
-          <option value="">Select Category</option>
-          {categories.map((cat) => (
-            <option key={cat._id} value={cat._id}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
-        <input
-          type="text"
-          placeholder="Enter subcategory name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="border border-gray-300 rounded-lg p-2 flex-1"
-        />
-        <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-          Add
+          Add Sub Category
         </button>
-      </form>
+      </div>
 
-      <ul className="space-y-2">
-        {subcategories.map((sub) => (
-          <li
-            key={sub._id}
-            className="p-3 border rounded-lg flex justify-between items-center"
-          >
-            <span>{sub.name}</span>
-            <span className="text-gray-500 text-sm">
-              {sub.category?.name || "No Category"}
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
+      <div className="overflow-auto w-full max-w-[95vw]">
+        <DisplayTable data={data} column={column} />
+      </div>
+
+      {openAddSubCategory && (
+        <UploadSubCategoryModel
+          close={() => setOpenAddSubCategory(false)}
+          fetchData={fetchSubCategory}
+        />
+      )}
+
+      {ImageURL && <ViewImage url={ImageURL} close={() => setImageURL("")} />}
+
+      {openEdit && (
+        <EditSubCategory
+          data={editData}
+          close={() => setOpenEdit(false)}
+          fetchData={fetchSubCategory}
+        />
+      )}
+
+      {openDeleteConfirmBox && (
+        <CofirmBox
+          cancel={() => setOpenDeleteConfirmBox(false)}
+          close={() => setOpenDeleteConfirmBox(false)}
+          confirm={handleDeleteSubCategory}
+        />
+      )}
+    </section>
   );
-}
+};
+
+export default SubCategoryPage;
