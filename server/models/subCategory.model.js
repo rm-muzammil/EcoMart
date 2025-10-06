@@ -4,7 +4,7 @@ const SubCategorySchema = new mongoose.Schema(
   {
     name: { type: String, default: "" },
     image: { type: String, default: "" },
-    category: { type: mongoose.Schema.ObjectId, ref: "category" },
+    category: [{ type: mongoose.Schema.ObjectId, ref: "category" }],
   },
   { timestamps: true }
 );

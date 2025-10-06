@@ -9,6 +9,7 @@ import connectToDB from "./config/connectToDB.js";
 import userRouter from "./route/user.route.js";
 import categoryRouter from "./route/category.route.js";
 import uploadRouter from "./route/upload.route.js";
+import subCategoryRouter from "./route/subCategory.route.js";
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/user", userRouter);
 app.use("/api/category", categoryRouter);
+app.use("/api/subcategory", subCategoryRouter);
 app.use("/api/file", uploadRouter);
 
 connectToDB().then(() => {
