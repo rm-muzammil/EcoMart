@@ -1,7 +1,9 @@
 import SubCategoryModel from "../models/subCategory.model.js";
 export const getSubCategoryController = async (request, response) => {
   try {
-    const data = await SubCategoryModel.find().sort({ createdAt: -1 });
+    const data = await SubCategoryModel.find()
+      .sort({ createdAt: -1 })
+      .populate("category");
     return response.json({
       data: data,
       error: false,
