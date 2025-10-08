@@ -74,7 +74,7 @@ const SummaryApi = {
     method: "put",
   },
   deleteSubCategory: {
-    url: "/api/subcategory/delete",
+    url: "/subcategory/delete",
     method: "delete",
   },
   createProduct: {

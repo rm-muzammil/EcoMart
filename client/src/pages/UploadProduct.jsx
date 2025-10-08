@@ -7,11 +7,16 @@ export default function UploadProduct() {
   const [subcategories, setSubcategories] = useState([]);
   const [productData, setProductData] = useState({
     name: "",
+    image: [],
+    category: [],
+    subcategory: [],
+    unit: [],
+    stock: "",
     price: "",
-    category: "",
-    subcategory: "",
+    discount: "",
     description: "",
-    image: null,
+    more_details: {},
+    publish: true,
   });
 
   const handleChange = (e) => {
@@ -77,6 +82,18 @@ export default function UploadProduct() {
           type="number"
           className="border border-gray-300 rounded-lg p-2 w-full"
         />
+        <div>
+          <div className="text-center flex justify-center items-center">
+            Upload Image
+          </div>
+
+          <input
+            type="file"
+            onChange={handleChange}
+            className="bg-amber-300 w-full relative h-24 flex justify-center items-center"
+            id="productImage"
+          />
+        </div>
         <select
           name="category"
           value={productData.category}
@@ -111,7 +128,6 @@ export default function UploadProduct() {
           className="border border-gray-300 rounded-lg p-2 w-full"
         />
         <input type="file" name="image" onChange={handleChange} />
-
         <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
           Upload
         </button>

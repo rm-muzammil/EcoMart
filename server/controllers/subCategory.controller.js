@@ -55,3 +55,76 @@ export const createSubCategoryController = async (request, response) => {
     });
   }
 };
+
+export const updateSubCategoryController = async (request, response) => {
+  try {
+    const { _id, name, image, category } = request.body;
+    if (!_id || !name || !category || !image) {
+      return response.status(400).json({
+        message: "Enter required fields",
+        error: true,
+        success: false,
+      });
+    }
+    const updateSubCategory = await SubCategoryModel.findByIdAndUpdate(
+      _id,
+      {
+        name,
+        image,
+        category,
+      },
+      { new: true }
+    );
+    if (!updateSubCategory) {
+      return response.status(500).json({
+        message: "Failed to update sub category",
+        error: true,
+        success: false,
+      });
+    }
+    return response.status(200).json({
+      message: "Sub category updated successfully",
+      data: updateSubCategory,
+      error: false,
+      success: true,
+    });
+  } catch (error) {
+    return response.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+};
+export const deleteSubCategoryController = async (request, response) => {
+  try {
+    const { _id } = request.body;
+    if (!_id) {
+      return response.status(400).json({
+        message: "Sub category id is required",
+        error: true,
+        success: false,
+      });
+    }
+    const deleteSubCategory = await SubCategoryModel.findByIdAndDelete(_id);
+    if (!deleteSubCategory) {
+      return response.status(500).json({
+        message: "Failed to delete sub category",
+        error: true,
+        success: false,
+      });
+    }
+    return response.status(200).json({
+      message: "Sub category deleted successfully",
+      data: deleteSubCategory,
+      error: false,
+      success: true,
+    });
+  } catch (error) {
+    return response.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+};
