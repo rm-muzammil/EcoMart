@@ -14,6 +14,7 @@ import Address from "../pages/Address";
 import Categories from "../pages/Categories";
 import SubCategories from "../pages/SubCategories";
 import UploadProduct from "../pages/UploadProduct";
+import Product from "../pages/Product";
 
 const router = createBrowserRouter([
   {
@@ -58,6 +59,7 @@ const router = createBrowserRouter([
           { path: "categories", element: <Categories /> },
           { path: "sub-categories", element: <SubCategories /> },
           { path: "upload-product", element: <UploadProduct /> },
+          { path: "products", element: <Product /> },
         ],
       },
     ],

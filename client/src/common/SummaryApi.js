@@ -78,11 +78,11 @@ const SummaryApi = {
     method: "delete",
   },
   createProduct: {
-    url: "/api/product/create",
+    url: "/product/create",
     method: "post",
   },
   getProduct: {
-    url: "/api/product/get",
+    url: "/product/get",
     method: "post",
   },
   getProductByCategory: {
@@ -102,7 +102,7 @@ const SummaryApi = {
     method: "put",
   },
   deleteProduct: {
-    url: "/api/product/delete-product",
+    url: "/product/delete-product",
     method: "delete",
   },
   searchProduct: {

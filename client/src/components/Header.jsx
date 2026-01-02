@@ -54,7 +54,7 @@ export default function Header() {
           {/* Logo */}
           <Link
             to="/"
-            className="text-2xl font-bold text-green-600 cursor-pointer"
+            className="text-4xl font-bold text-green-600 cursor-pointer"
           >
             EcoMart
           </Link>
