@@ -6,6 +6,15 @@ import { useSelector } from "react-redux";
 function Home() {
   const loadingCategory = useSelector((state) => state.product.loadingCategory);
   const allCategoryData = useSelector((state) => state.product.allCategory);
+  const allSubCategoryData = useSelector(
+    (state) => state.product.allSubCategory
+  );
+
+  const handleRedirectProductListPage = (id, name) => {
+    const subCategory = allSubCategoryData.filter(
+      (subCat) => subCat.categoryId === id
+    );
+  };
   return (
     <section>
       <div className="container mx-auto p-4">
@@ -42,7 +51,12 @@ function Home() {
             })
           : allCategoryData.map((category, index) => {
               return (
-                <div className="bg-white rounded p-4 min-h-36 grid  gap-2 shadow-md">
+                <div
+                  className="bg-white rounded p-4 min-h-36 grid  gap-2 shadow-md"
+                  onClick={() =>
+                    handleRedirectProductListPage(category.id, category.name)
+                  }
+                >
                   <div>
                     <img src={category.image} alt="" />
                   </div>
