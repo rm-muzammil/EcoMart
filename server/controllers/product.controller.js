@@ -121,7 +121,7 @@ export const getProductByCategory = async (request, response) => {
     }
 
     const product = await ProductModel.find({
-      category: { $in: id },
+      category: id, // ✅ FIXED
     }).limit(15);
 
     return response.json({

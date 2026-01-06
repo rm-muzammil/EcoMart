@@ -2,6 +2,7 @@ import React, { use } from "react";
 import banner from "../assets/banner.jpg";
 import mobile_banner from "../assets/banner-mobile.jpg";
 import { useSelector } from "react-redux";
+import CategoryWiseProductDisplay from "../components/CategoryWiseProductDisplay";
 
 function Home() {
   const loadingCategory = useSelector((state) => state.product.loadingCategory);
@@ -14,7 +15,9 @@ function Home() {
     const subCategory = allSubCategoryData.filter(
       (subCat) => subCat.categoryId === id
     );
+    console.log(subCategory);
   };
+
   return (
     <section>
       <div className="container mx-auto p-4">
@@ -39,7 +42,10 @@ function Home() {
         {loadingCategory
           ? new Array(12).fill(null).map((_, index) => {
               return (
-                <div className="bg-white rounded p-4 min-h-36 grid gap-2 shadow-md">
+                <div
+                  key={index + "dis"}
+                  className="bg-white rounded p-4 min-h-36 grid gap-2 shadow-md"
+                >
                   <div className="bg-blue-100 min-h-24"></div>
                   <div className="bg-blue-100 h-8"></div>
                   {/* <div>
@@ -52,6 +58,7 @@ function Home() {
           : allCategoryData.map((category, index) => {
               return (
                 <div
+                  key={index + "cat"}
                   className="bg-white rounded p-4 min-h-36 grid  gap-2 shadow-md"
                   onClick={() =>
                     handleRedirectProductListPage(category.id, category.name)
@@ -63,6 +70,17 @@ function Home() {
                 </div>
               );
             })}
+      </div>
+      <div>
+        {allCategoryData.map((category, index) => {
+          return (
+            <CategoryWiseProductDisplay
+              key={"CWPD" + index}
+              id={category.id}
+              name={category.name}
+            />
+          );
+        })}
       </div>
     </section>
   );

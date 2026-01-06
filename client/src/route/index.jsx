@@ -15,6 +15,7 @@ import Categories from "../pages/Categories";
 import SubCategories from "../pages/SubCategories";
 import UploadProduct from "../pages/UploadProduct";
 import Product from "../pages/Product";
+import ProductListPage from "../pages/ProductListPage";
 
 const router = createBrowserRouter([
   {
