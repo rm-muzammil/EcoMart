@@ -17,6 +17,11 @@ const productRouter = Router();
 productRouter.post("/create", auth, admin, createProductController);
 productRouter.post("/get", getProductController);
 productRouter.post("/get-product-by-category", getProductByCategory);
+// productRouter.get("/get-product-by-category", (req, res) =>
+//   res
+//     .status(405)
+//     .json({ message: "Use POST with JSON body { id }", success: false })
+// );
 productRouter.post(
   "/get-pruduct-by-category-and-subcategory",
   getProductByCategoryAndSubCategory

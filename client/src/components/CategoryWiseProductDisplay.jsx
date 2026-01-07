@@ -10,15 +10,19 @@ function CategoryWiseProductDisplay({ id, name }) {
   const [loading, setLoading] = useState(false);
 
   const fetchCategoryWiseData = async () => {
+    // guard: don't call API without a category id
+    if (!id) return;
+
     try {
       setLoading(true);
+      console.debug("fetchCategoryWiseData category id:", id);
 
       const response = await Axios({
         ...SummaryApi.getProductByCategory,
         data: { id },
       });
 
-      if (response.data.success) {
+      if (response?.data?.success) {
         setData(response.data.data);
       }
     } catch (error) {
@@ -31,6 +35,9 @@ function CategoryWiseProductDisplay({ id, name }) {
   useEffect(() => {
     fetchCategoryWiseData();
   }, []);
+
+  console.log("data length:", data.length);
+  console.log("data value:", data);
 
   return (
     <div>
@@ -47,12 +54,16 @@ function CategoryWiseProductDisplay({ id, name }) {
             .fill(null)
             .map((_, index) => <CardLoading key={index} />)}
 
-        {data.map(
-          (product, index) => (
-            console.log(product),
-            (<CardProduct key={product._id || index} data={product} />)
-          )
-        )}
+        {data.map((product, index) => {
+          console.log("product:", product);
+
+          return (
+            <CardProduct
+              key={product._id || index}
+              data={product} // ✅ FIXED PROP NAME
+            />
+          );
+        })}
       </div>
     </div>
   );

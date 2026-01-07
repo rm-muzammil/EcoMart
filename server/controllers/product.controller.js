@@ -120,9 +120,13 @@ export const getProductByCategory = async (request, response) => {
       });
     }
 
+    console.log("Category ID received:", id);
+
     const product = await ProductModel.find({
-      category: id, // ✅ FIXED
+      category: { $in: id }, // ✅ FIXED
     }).limit(15);
+
+    console.log("Products found:", product.length);
 
     return response.json({
       message: "category product list",
