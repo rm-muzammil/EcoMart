@@ -108,37 +108,37 @@ export const getProductController = async (request, response) => {
   }
 };
 
-export const getProductByCategory = async (request, response) => {
+export const getProductByCategory = async (req, res) => {
   try {
-    const { id } = request.body;
+    const { id } = req.body;
 
     if (!id) {
-      return response.status(400).json({
+      return res.status(400).json({
         message: "provide category id",
-        error: true,
         success: false,
       });
     }
 
-    console.log("Category ID received:", id);
+    const categoryId = new mongoose.Types.ObjectId(id);
 
     const product = await ProductModel.find({
-      category: { $in: id }, // ✅ FIXED
-    }).limit(15);
+      category: categoryId,
+      publish: true,
+    })
+      .limit(15)
+      .populate("category subCategory");
 
-    console.log("Products found:", product.length);
-
-    return response.json({
+    return res.json({
       message: "category product list",
       data: product,
-      error: false,
       success: true,
+      error: false,
     });
   } catch (error) {
-    return response.status(500).json({
-      message: error.message || error,
-      error: true,
+    return res.status(500).json({
+      message: error.message,
       success: false,
+      error: true,
     });
   }
 };

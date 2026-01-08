@@ -23,7 +23,7 @@ function CardProduct({ data }) {
   return (
     <div>
       <div className="animate-pulse border border-gray-200 rounded-md p-4 w-48">
-        <img src={data.img} alt="" />
+        <img src={data.img[0]} alt="" />
         <div className="bg-gray-300 h-32 w-full mb-4"></div>
         <div className="h-4 bg-gray-300 mb-2 w-3/4"></div>
         <div className="h-4 bg-gray-300 mb-2 w-1/2"></div>
