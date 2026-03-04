@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import UploadImage from "../utils/UploadImage.js";
+import uploadImage from "../utils/uploadImage.js";
 import Loading from "../components/Loading.jsx";
 import ViewImage from "../components/ViewImage.jsx";
 import { MdDelete } from "react-icons/md";
@@ -54,7 +54,7 @@ const UploadProduct = () => {
       return;
     }
     setImageLoading(true);
-    const response = await UploadImage(file);
+    const response = await uploadImage(file);
     const { data: ImageResponse } = response;
     const imageUrl = ImageResponse.data.url;
 
