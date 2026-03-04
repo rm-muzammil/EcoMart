@@ -1,17 +1,17 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import uploadImage from "../utils/UploadImage";
-import Loading from "../components/Loading";
-import ViewImage from "../components/ViewImage";
+import uploadImage from "../utils/UploadImage.js";
+import Loading from "../components/Loading.jsx";
+import ViewImage from "../components/ViewImage.jsx";
 import { MdDelete } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { IoClose } from "react-icons/io5";
-import AddFieldComponent from "../components/AddFieldComponent";
-import Axios from "../utils/Axios";
-import SummaryApi from "../common/SummaryApi";
-import AxiosToastError from "../utils/AxiosToastError";
-import successAlert from "../utils/successAlert";
-import { useEffect } from "react";
+import AddFieldComponent from "../components/AddFieldComponent.jsx";
+import Axios from "../utils/Axios.js";
+import SummaryApi from "../common/SummaryApi.js";
+import AxiosToastError from "../utils/AxiosToastError.jsx";
+import successAlert from "../utils/successAlert.js";
+
 
 const UploadProduct = () => {
   const [data, setData] = useState({
