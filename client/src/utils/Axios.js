@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const Axios = axios.create({
-  baseURL: "http://localhost:8080/api", // ✅ correct backend URL
+  baseURL: "https://ecomart-production-1397.up.railway.app/api", // ✅ correct backend URL
   withCredentials: true,
 });
 
