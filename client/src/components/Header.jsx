@@ -34,7 +34,7 @@ export default function Header() {
 
   const handleLogout = async () => {
     try {
-      const res = await Axios("http://localhost:8080/api/user/logout");
+      const res = await Axios("https://ecomart-production-1397.up.railway.app/api/user/logout");
 
       if (res.data.success) {
         dispatch(logout()); // ✅ clears Redux state

@@ -37,7 +37,7 @@ export default function UserProfileAvatarEdit({
       setLoading(true);
 
       const res = await axios.put(
-        "http://localhost:8080/api/user/upload-avatar",
+        "https://ecomart-production-1397.up.railway.app/api/user/upload-avatar",
         formData,
         {
           headers: {

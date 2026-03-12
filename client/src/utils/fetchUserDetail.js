@@ -2,7 +2,7 @@ import Axios from "./Axios";
 const fetchUserDetails = async () => {
   try {
     const res = await Axios.get(
-      "http://localhost:8080/api/user/get-user-details"
+      "https://ecomart-production-1397.up.railway.app/api/user/get-user-details"
     );
     return res.data;
   } catch (error) {

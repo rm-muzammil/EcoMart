@@ -26,7 +26,7 @@ function Register() {
       setLoading(true);
 
       const res = await axios.post(
-        "http://localhost:8080/api/user/register",
+        "https://ecomart-production-1397.up.railway.app/api/user/register",
         formData,
         {
           headers: { "Content-Type": "application/json" },

@@ -23,7 +23,7 @@ function Login() {
       setLoading(true);
 
       const res = await axios.post(
-        "http://localhost:8080/api/user/login",
+        "https://ecomart-production-1397.up.railway.app/api/user/login",
         formData,
         {
           headers: { "Content-Type": "application/json" },

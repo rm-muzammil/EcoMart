@@ -37,7 +37,7 @@ function ResetPassword() {
       setLoading(true);
 
       const res = await axios.put(
-        "http://localhost:8080/api/user/reset-password",
+        "https://ecomart-production-1397.up.railway.app/api/user/reset-password",
         {
           email: formData.email,
           newPassword: formData.newPassword,

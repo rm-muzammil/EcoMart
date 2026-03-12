@@ -42,7 +42,7 @@ Axios.interceptors.request.use(
 const refreshAccessToken = async (refreshToken) => {
   try {
     const response = await Axios(
-      "http://localhost:8080/api/user/refresh-token",
+      "https://ecomart-production-1397.up.railway.app/api/user/refresh-token",
       {
         headers: {
           Authorization: `Bearer ${refreshToken}`,
