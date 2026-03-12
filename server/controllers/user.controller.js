@@ -1,4 +1,4 @@
-import verifyEmailTemplate from "../utils/verifyEmailTemplate.js"; // recently edited
+import verifyemailtemp from "../utils/verifyemailtemp.js"; // recently edited
 import sendEmail from "../config/sendEmail.js";
 import UserModel from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
@@ -43,7 +43,7 @@ export async function registerUserController(req, res) {
     const verifyEmail = await sendEmail({
       sendTO: email,
       subject: "Verification",
-      html: verifyEmailTemplate({
+      html: verifyemailtemp({
         name,
         url: VerifyEmailUrl,
       }),
