@@ -48,6 +48,10 @@ export async function registerUserController(req, res) {
         url: VerifyEmailUrl,
       }),
     });
+
+    if (!verifyEmail) {
+  return res.status(404).json({ message: "User not found" });
+}
     return res.json({
       message: "User Resistered successfully",
       error: false,
@@ -71,7 +75,7 @@ export async function verifyEmailController(req, res) {
         success: false,
       });
     }
-    const updateUser = await UserModel.updateOne(
+    await UserModel.updateOne(
       { _id: code },
       {
         verify_email: true,
@@ -128,7 +132,7 @@ export async function loginUserController(req, res) {
     const accessToken = await generatedAccessToken(user._id);
     const refreshToken = await generatedRefreshToken(user._id);
 
-    const updateUser = await UserModel.findByIdAndUpdate(user?._id, {
+    await UserModel.findByIdAndUpdate(user?._id, {
       last_login_date: new Date().toISOString(),
     });
 
@@ -166,7 +170,7 @@ export async function logoutUserController(req, res) {
     res.clearCookie("accessToken", cookiesOption);
     res.clearCookie("refreshToken", cookiesOption);
 
-    const removeRefreshToken = await UserModel.findByIdAndUpdate(userId, {
+    await UserModel.findByIdAndUpdate(userId, {
       refresh_token: "",
     });
 
@@ -206,7 +210,7 @@ export async function uploadAvatar(req, res) {
 
     const upload = await uploadImageCloudinary(image);
 
-    const updateUser = await UserModel.findByIdAndUpdate(userId, {
+    await UserModel.findByIdAndUpdate(userId, {
       avatar: upload.url,
     });
     return res.json({
@@ -270,7 +274,7 @@ export async function forgotPasswordController(req, res) {
     const otp = generatedOtp();
     const expireTime = new Date() + 1000 * 60 * 10;
 
-    const update = await UserModel.findByIdAndUpdate(user._id, {
+    await UserModel.findByIdAndUpdate(user._id, {
       forgot_password_otp: otp,
       forgot_password_expiry: new Date(expireTime).toISOString(),
     });
@@ -374,7 +378,7 @@ export async function resetPasswordController(req, res) {
     const salt = await bcryptjs.genSalt(10);
     const hashPassword = await bcryptjs.hash(newPassword, salt);
 
-    const update = await UserModel.findOneAndUpdate(user._id, {
+    await UserModel.findOneAndUpdate(user._id, {
       password: hashPassword,
     });
 

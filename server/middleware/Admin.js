@@ -15,9 +15,9 @@ export const admin = async (request, response, next) => {
     }
 
     next();
-  } catch (error) {
+  } catch (_error) {
     return response.status(500).json({
-      message: "Permission denial",
+      message: `Permission denial ${_error.message || _error}`,
       error: true,
       success: false,
     });

@@ -8,6 +8,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "lint": "eslint .",
     "dev": "nodemon index.js"
   },
   "dependencies": {
@@ -24,5 +25,10 @@
     "multer": "^2.0.2",
     "nodemon": "^3.1.10",
     "resend": "^6.0.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.0.3",
+    "globals": "^17.4.0"
   }
 }

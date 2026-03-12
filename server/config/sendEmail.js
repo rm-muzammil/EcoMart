@@ -1,39 +1,3 @@
-// import { Resend } from "resend";
-// import dotenv from "dotenv";
-// dotenv.config();
-
-// if (!process.env.RESENT_API) {
-//   console.log("RESENT_API is required");
-// }
-
-// const resend = new Resend(process.env.RESENT_API);
-
-// const sendEmail = async ({ sendTO, subject, html }) => {
-//   try {
-//     const { data, error } = await resend.emails.send({
-//       from: "EcoMart <onboarding@resend.dev>",
-//       to: sendTO,
-//       subject: subject,
-//       html: html,
-//     });
-//     if (error) {
-//       return console.error({ error });
-//     }
-//     return data;
-//   } catch (error) {
-//     console.error("Email sending failed:", error.message);
-//   }
-// };
-
-// (async function () {
-//   if (error) {
-//     return console.error({ error });
-//   }
-
-//   console.log({ data });
-// })();
-
-// export default sendEmail;
 import { Resend } from "resend";
 import dotenv from "dotenv";
 dotenv.config();
@@ -61,8 +25,11 @@ const sendEmail = async ({ sendTO, subject, html }) => {
     console.log("✅ Email sent successfully!");
     return data;
   } catch (error) {
-    console.error("❌ Unexpected error while sending email:", error.message);
-    return null;
+    // ✅ Attach the original error as cause
+    throw new Error(
+      error instanceof Error ? error.message : "Unexpected error sending email",
+      { cause: error }
+    );
   }
 };
 

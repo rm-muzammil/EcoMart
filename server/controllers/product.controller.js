@@ -1,5 +1,5 @@
 import ProductModel from "../models/product.model.js";
-
+import mongoose from "mongoose";
 export const createProductController = async (request, response) => {
   try {
     const {
@@ -62,22 +62,14 @@ export const createProductController = async (request, response) => {
 
 export const getProductController = async (request, response) => {
   try {
-    let { page, limit, search } = request.body;
+    // Set default values in destructuring
+    let { page = 1, limit = 10, search = "" } = request.body;
 
-    if (!page) {
-      page = 1;
-    }
-
-    if (!limit) {
-      limit = 10;
-    }
+    page = Number(page);   // ensure number
+    limit = Number(limit); // ensure number
 
     const query = search
-      ? {
-          $text: {
-            $search: search,
-          },
-        }
+      ? { $text: { $search: search } }
       : {};
 
     const skip = (page - 1) * limit;
@@ -95,13 +87,13 @@ export const getProductController = async (request, response) => {
       message: "Product data",
       error: false,
       success: true,
-      totalCount: totalCount,
+      totalCount,
       totalNoPage: Math.ceil(totalCount / limit),
-      data: data,
+      data,
     });
   } catch (error) {
     return response.status(500).json({
-      message: error.message || error,
+      message: error instanceof Error ? error.message : error,
       error: true,
       success: false,
     });
@@ -145,7 +137,9 @@ export const getProductByCategory = async (req, res) => {
 
 export const getProductByCategoryAndSubCategory = async (request, response) => {
   try {
-    const { categoryId, subCategoryId, page, limit } = request.body;
+    const { categoryId, subCategoryId } = request.body;
+    // ✅ Use let with default values
+    let { page = 1, limit = 10 } = request.body;
 
     if (!categoryId || !subCategoryId) {
       return response.status(400).json({
@@ -155,13 +149,8 @@ export const getProductByCategoryAndSubCategory = async (request, response) => {
       });
     }
 
-    if (!page) {
-      page = 1;
-    }
-
-    if (!limit) {
-      limit = 10;
-    }
+    page = Number(page);   // ensure number
+    limit = Number(limit);
 
     const query = {
       category: { $in: categoryId },
@@ -171,22 +160,25 @@ export const getProductByCategoryAndSubCategory = async (request, response) => {
     const skip = (page - 1) * limit;
 
     const [data, dataCount] = await Promise.all([
-      ProductModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit),
+      ProductModel.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
       ProductModel.countDocuments(query),
     ]);
 
     return response.json({
       message: "Product list",
-      data: data,
+      data,
       totalCount: dataCount,
-      page: page,
-      limit: limit,
+      page,
+      limit,
       success: true,
       error: false,
     });
   } catch (error) {
     return response.status(500).json({
-      message: error.message || error,
+      message: error instanceof Error ? error.message : error,
       error: true,
       success: false,
     });

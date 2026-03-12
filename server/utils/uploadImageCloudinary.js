@@ -6,7 +6,7 @@ cloudinary.config({
 });
 const uploadImageCloudinary = async (image) => {
   const buffer = image?.buffer || Buffer.from(await image.arrayBuffer());
-  const uploadImage = await new Promise((resolve, reject) => {
+  const uploadImage = await new Promise((resolve) => {
     cloudinary.uploader
       .upload_stream({ folder: "ecomart" }, (error, uploadResult) => {
         return resolve(uploadResult);

@@ -7,7 +7,7 @@ const generatedRefreshToken = async (userId) => {
     process.env.SECRET_KEY_REFRESH_TOKEN,
     { expiresIn: "7d" }
   );
-  const updateRefreshTokenUser = await UserModel.updateOne(
+  await UserModel.updateOne(
     {
       _id: userId,
     },

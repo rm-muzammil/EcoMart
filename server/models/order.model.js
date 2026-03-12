@@ -8,9 +8,6 @@ const orderSchema = mongoose.Schema(
       required: [true, "OrderId required"],
       unique: true,
     },
-    product_details: {
-      type: Object,
-    },
     productId: {
       type: mongoose.Schema.ObjectId,
       ref: "product",
